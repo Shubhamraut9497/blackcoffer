@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import {
   Eye,
   EyeOff,
@@ -11,6 +13,7 @@ import {
   Lock,
   CheckCircle2,
 } from "lucide-react";
+import { API_CONFIG, API_ENDPOINTS, getApiHeaders } from "../config/api";
 
 const SignupPage = () => {
   const [formData, setFormData] = useState({
@@ -73,11 +76,40 @@ const SignupPage = () => {
 
     setIsLoading(true);
 
-    setTimeout(() => {
-      console.log("Signup attempted with:", formData);
-      setIsLoading(false);
-    }, 1500);
+    fetch(API_ENDPOINTS.AUTH.SIGNUP, {
+      method: 'POST',
+      ...API_CONFIG,
+      headers: getApiHeaders(),
+      body: JSON.stringify({ name: formData.fullName, email: formData.email, password: formData.password })
+    })
+      .then(async (res) => {
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.message || 'Signup failed');
+        // server set httpOnly cookie; fetch profile to populate auth
+        const profileRes = await fetch(API_ENDPOINTS.AUTH.PROFILE, { ...API_CONFIG });
+        const profileData = await profileRes.json();
+        if (profileData.success) {
+          auth.login('', profileData.user);
+        } else {
+          auth.login('', data.user ?? { email: formData.email });
+        }
+        // navigation will be handled by useEffect
+      })
+      .catch((err) => {
+        console.error(err);
+        alert(err.message || 'Signup error');
+      })
+      .finally(() => setIsLoading(false));
   };
+
+  const navigate = useNavigate();
+  const auth = useAuth();
+
+  useEffect(() => {
+    if (auth.user) {
+      navigate('/dashboard');
+    }
+  }, [auth.user, navigate]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center p-4 relative overflow-hidden">

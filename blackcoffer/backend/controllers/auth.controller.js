@@ -33,12 +33,13 @@ export class AuthController {
       });
 
 // ✅ Set cookie (no token exposed to frontend)
+      // Set httpOnly cookie for security; frontend will use credentials: 'include' to send it.
       res.cookie("token", token, {
-        httpOnly: false,
+        httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'strict',
         maxAge: 7 * 24 * 60 * 60 * 1000
-      });  
+      });
 
       res.status(201).json({
         success: true,
@@ -64,6 +65,7 @@ export class AuthController {
   static async login(req, res) {
     try {
       const { email, password } = req.body;
+      console.log("Login attempt for email:", email); 
 
       // Find user by email
       const user = await User.findOne({ email });
@@ -92,8 +94,9 @@ export class AuthController {
       });
 
       // ✅ Set cookie (no token exposed to frontend)
+      // Set httpOnly cookie for security
       res.cookie("token", token, {
-        httpOnly: false,
+        httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'strict',
         maxAge: 7 * 24 * 60 * 60 * 1000
@@ -152,6 +155,8 @@ export class AuthController {
 
   // Logout (client-side should remove token)
   static async logout(req, res) {
+    // Clear cookie on logout
+    res.clearCookie('token');
     res.status(200).json({
       success: true,
       message: 'Logout successful'
