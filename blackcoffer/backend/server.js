@@ -5,14 +5,14 @@ import dotenv from "dotenv";
 import cookieParser from 'cookie-parser';
 import authRoutes from "./routes/auth.routes.js";
 import dataRoutes from "./routes/data.routes.js";
+import { corsMiddleware } from "./middleware/cors.middleware.js";
 
 dotenv.config();
 
 const app = express();
 
 // Middleware
-const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
-app.use(cors({ origin: FRONTEND_URL, credentials: true }));
+app.use(corsMiddleware);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());

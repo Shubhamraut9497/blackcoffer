@@ -1,4 +1,4 @@
-import cors, { CorsOptions } from 'cors';
+import cors from 'cors';
 
 // Accept a comma-separated list of allowed origins in the env var.
 // Normalize them by trimming whitespace and trailing slashes so a
@@ -10,7 +10,7 @@ const allowedOrigins = rawOrigins
   .filter(Boolean)
   .map((s) => s.replace(/\/+$/, ''));
 
-const corsOptions: CorsOptions = {
+const corsOptions= {
   origin: (incomingOrigin, callback) => {
     // Allow requests with no origin (e.g. curl, server-to-server)
     if (!incomingOrigin) return callback(null, true);
