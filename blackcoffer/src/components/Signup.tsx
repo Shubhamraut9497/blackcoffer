@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import {
   Eye,
   EyeOff,
@@ -77,27 +77,33 @@ const SignupPage = () => {
     setIsLoading(true);
 
     fetch(API_ENDPOINTS.AUTH.SIGNUP, {
-      method: 'POST',
+      method: "POST",
       ...API_CONFIG,
       headers: getApiHeaders(),
-      body: JSON.stringify({ name: formData.fullName, email: formData.email, password: formData.password })
+      body: JSON.stringify({
+        name: formData.fullName,
+        email: formData.email,
+        password: formData.password,
+      }),
     })
       .then(async (res) => {
         const data = await res.json();
-        if (!res.ok) throw new Error(data.message || 'Signup failed');
+        if (!res.ok) throw new Error(data.message || "Signup failed");
         // server set httpOnly cookie; fetch profile to populate auth
-        const profileRes = await fetch(API_ENDPOINTS.AUTH.PROFILE, { ...API_CONFIG });
+        const profileRes = await fetch(API_ENDPOINTS.AUTH.PROFILE, {
+          ...API_CONFIG,
+        });
         const profileData = await profileRes.json();
         if (profileData.success) {
-          auth.login('', profileData.user);
+          auth.login("", profileData.user);
         } else {
-          auth.login('', data.user ?? { email: formData.email });
+          auth.login("", data.user ?? { email: formData.email });
         }
         // navigation will be handled by useEffect
       })
       .catch((err) => {
         console.error(err);
-        alert(err.message || 'Signup error');
+        alert(err.message || "Signup error");
       })
       .finally(() => setIsLoading(false));
   };
@@ -107,7 +113,7 @@ const SignupPage = () => {
 
   useEffect(() => {
     if (auth.user) {
-      navigate('/dashboard');
+      navigate("/dashboard");
     }
   }, [auth.user, navigate]);
 
@@ -368,7 +374,7 @@ const SignupPage = () => {
               </span>
             </div>
           </div>
-
+          {/* 
           <div className="grid grid-cols-2 gap-3">
             <button className="flex items-center justify-center px-4 py-2 bg-white/5 border border-white/10 rounded-lg hover:bg-white/10 transition-colors text-white">
               <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
@@ -401,11 +407,14 @@ const SignupPage = () => {
               </svg>
               GitHub
             </button>
-          </div>
+          </div> */}
 
           <p className="text-center text-sm text-gray-400">
             Already have an account?{" "}
-            <button className="text-cyan-400 hover:text-cyan-300 font-medium transition-colors">
+            <button
+              className="text-cyan-400 hover:text-cyan-300 font-medium transition-colors"
+              onClick={() => navigate("/login")}
+            >
               Sign in
             </button>
           </p>

@@ -209,7 +209,7 @@ const LoginPage = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          {/* <div className="grid grid-cols-2 gap-3">
             <button className="flex items-center justify-center px-4 py-2 bg-white/5 border border-white/10 rounded-lg hover:bg-white/10 transition-colors text-white">
               <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
                 <path
@@ -241,11 +241,11 @@ const LoginPage = () => {
               </svg>
               GitHub
             </button>
-          </div>
+          </div> */}
 
           <p className="text-center text-sm text-gray-400">
             Don't have an account?{" "}
-            <button className="text-cyan-400 hover:text-cyan-300 font-medium transition-colors">
+            <button className="text-cyan-400 hover:text-cyan-300 font-medium transition-colors" onClick={()=>navigate("/signup")}>
               Sign up
             </button>
           </p>
