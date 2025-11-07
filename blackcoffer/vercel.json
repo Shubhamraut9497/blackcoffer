@@ -15,7 +15,7 @@
         },
         {
           "key": "Access-Control-Allow-Origin",
-          "value": "https://your-backend-url.vercel.app"
+          "value": "https://blackcoffer-wznm.onrender.com/"
         },
         {
           "key": "Access-Control-Allow-Methods",
